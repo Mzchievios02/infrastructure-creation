@@ -1,3 +1,14 @@
+Parameters:
+    UbuntuAmiId:
+      Description: Latest Ubuntu 18 AMI ID from parameter store
+      Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    InstanceType:
+      Description: EC2 Instance type
+      Type: String
+    myHomePublicIP:
+      Description: My home public IP address
+      Type: String
+
 Resources:
   mySecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -7,12 +18,16 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 0.0.0.0/0
+          CidrIp: 75.158.103.38/32
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0  
   myEC2:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-0cff7528ff583bf9a
-      InstanceType: t2.micro
+      ImageId: !Ref UbuntuAmiId
+      InstanceType: !Ref InstanceType
       SecurityGroups:
         - Ref: mySecurityGroup
       BlockDeviceMappings:
