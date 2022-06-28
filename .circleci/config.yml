@@ -12,8 +12,8 @@ jobs:
           command: |
             aws cloudformation create-stack \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-              --template-body ec2.yml \
-              --parameters param.json \
+              --template-body file://ec2.yml \
+              --parameters file://param.json \
               --region $AWS_DEFAULT_REGION
 workflows:
   aws-cli:
