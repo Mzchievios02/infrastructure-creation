@@ -1,0 +1,62 @@
+---
+- name: "update apt packages"
+  become: yes
+  apt: 
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: yes
+  apt:
+    upgrade: yes
+  
+# - name: "Install Nodejs"
+#   become: yes
+#   command:
+#     cmd: cd ~
+
+# - name: "Install Nodejs"
+#   become: yes
+#   command:
+#     cmd: curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
+
+# - name: "Install Nodejs"
+#   become: yes
+#   command:
+#     cmd: nano /tmp/nodesource_setup.sh
+
+# - name: "Install Nodejs"
+#   become: yes
+#   command:
+#     cmd: sudo bash /tmp/nodesource_setup.sh
+
+- name: "Install Nodejs and npm"
+  become: yes    
+  apt:
+    name: ["nodejs", "npm"]
+    state: latest
+
+# - name: "Install NPM"
+#   become: yes
+#   apt:
+#     name: npm
+#     state: latest
+
+- name: "Install pm2"
+  become: yes
+  npm:
+    name: pm2
+    global: yes  
+
+- name: "Create web directory"
+  file:
+    path: ~/web
+    state: directory
+
+- name: "Copy index.js from local to remote"
+  copy:
+    src: index.js
+    dest: ~/web/index.js
+
+- name: "Start web server"
+  command:
+    cmd: pm2 start ~/web/index.js -f
