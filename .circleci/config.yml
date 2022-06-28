@@ -6,7 +6,7 @@ jobs:
     executor: aws-cli/default
     steps:
       - checkout
-      - aws-cli/setup:
+      - aws-cli/setup
       - run:
           name: Create CloudFormation Stack
           command: |
