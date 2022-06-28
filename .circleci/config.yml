@@ -1,6 +1,6 @@
 version: 2.1
-orbs:
-  aws-cli: circleci/aws-cli@3.1
+# orbs:
+#   aws-cli: circleci/aws-cli@3.1
 jobs:
   create-infrastructure:
     executor: aws-cli/default
@@ -15,7 +15,23 @@ jobs:
               --template-body file://ec2.yml \
               --parameters file://param.json \
               --region $AWS_DEFAULT_REGION
+  configure-infrastructure:
+    docker:
+      image: cimg/python:3.10.5
+    steps:
+      - checkout
+      - add_ssh_keys:
+            fingerprints: ["ca:0e:3c:d2:b0:fe:9f:c9:28:50:75:17:20:b3:3f:a3"]
+      - run: 
+          name: Install Ansible
+          command: |
+            apk add --update ansible
+      - run:
+          name: Run Playbook and Configure server
+          command: |
+            ansible-playbook -i inventory main.yml
 workflows:
   aws-cli:
     jobs:
-      - create-infrastructure
+      # - create-infrastructure
+      - configure-infrastructure
