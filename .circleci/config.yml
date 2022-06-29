@@ -63,12 +63,14 @@ jobs:
           command: |
             # URL = http://$(cat url)  
             # test if website exists
-            if curl -s --head http://$(cat url):3000
+            if curl -s --head http://$(cat url)
             then 
               return 0
             else 
               return 1
-            fi    
+            fi
+      - destroy-environmet
+        when: on_fail    
 workflows:
   my_workflow:
     jobs:
