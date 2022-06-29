@@ -1,8 +1,6 @@
 version: 2.1
 commands:
   destroy-environmet:
-    docker: 
-      image: amazon/aws-cli
     steps:
       - run: 
           name: Destroy Environment
@@ -51,17 +49,18 @@ jobs:
   # smoke test
   smoke-test:
     docker:
-      - image: alpine:latest
+      - image: amazon/aws-cli
     steps:
-      # - run: |
-      #     yum install -y tar gzip
+      - run: |
+          yum install -y tar gzip
+          yum install -y curl
       - attach_workspace:
           at: ~/   
       - run:
           name: Get Public IP address of server
           command: |
             tail -n 1 ~/inventory > url
-      - run: apk add --update curl
+      # - run: apk add --update curl
       - run: 
           name: smoke test
           command: |  
