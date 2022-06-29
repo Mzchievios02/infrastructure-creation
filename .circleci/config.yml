@@ -8,6 +8,7 @@ commands:
           command:
             aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5}
 jobs:
+  # Create Infrastructure with CloudFormation
   create-infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -28,6 +29,7 @@ jobs:
           root: ~/  
           paths: 
             - inventory
+  # Configure Infrastrcuture with Ansible
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.16
@@ -60,12 +62,12 @@ jobs:
           name: Get Public IP address of server
           command: |
             tail -n 1 ~/inventory > url
-      # - run: apk add --update curl
+      # - run: apk add --update curl  # use this command for alpine image
       - run: 
           name: smoke test
           command: |  
             # test if website exists
-            if curl -s --head http://$(cat url)
+            if curl -s --head http://$(cat url):3000 # remove port 3000 to simulate a failure
             then 
               return 0
             else 
