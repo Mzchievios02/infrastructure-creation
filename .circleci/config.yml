@@ -55,7 +55,7 @@ jobs:
           command: |
             # URL = http://$(cat url)  
             # test if website exists
-            if curl -s --head http://$(cat url)
+            if curl -s --head http://$(cat url):3000
             then 
               return 0
             else 
