@@ -82,10 +82,10 @@ jobs:
 workflows:
   my_workflow:
     jobs:
-      # - create-infrastructure  
-      # - configure-infrastructure:
-      #     requires: 
-      #       - create-infrastructure
-      - smoke-test
-          # requires:
-          #   - configure-infrastructure
+      - create-infrastructure  
+      - configure-infrastructure:
+          requires: 
+            - create-infrastructure
+      - smoke-test:
+          requires:
+            - configure-infrastructure
