@@ -59,7 +59,7 @@ jobs:
           name: Get Public IP address of server
           command: |
             tail -n 1 ~/inventory > url
-     - run:
+      - run:
         name: Install curl and aws cli 
         command: |  
           apk add --update curl
