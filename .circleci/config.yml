@@ -50,7 +50,7 @@ jobs:
   # smoke test
   smoke-test:
     docker:
-      - image: alpine:latest
+      - image: amazon/aws-cli
     steps:
       - attach_workspace:
           at: ~/   
