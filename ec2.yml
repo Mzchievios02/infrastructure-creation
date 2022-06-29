@@ -5,9 +5,6 @@ Parameters:
     InstanceType:
       Description: EC2 Instance type
       Type: String
-    myHomePublicIP:
-      Description: My home public IP address
-      Type: String
 
 Resources:
   mySecurityGroup:
