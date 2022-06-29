@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: |
-            ansible-playbook -i ~/inventory main.yml -vvv
+            ansible-playbook -i ~/inventory main.yml --private-key /root/.ssh/id_rsa_* -vvv
 workflows:
   my_workflow:
     jobs:
