@@ -44,7 +44,7 @@ jobs:
       - image: alpine:latest
     steps:
       - attach_workspace:
-        at: ~/   
+          at: ~/   
       - run:
           name: Get Public IP address of server
           command: |
