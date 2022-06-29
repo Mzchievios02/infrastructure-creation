@@ -51,7 +51,7 @@ jobs:
   # smoke test
   smoke-test:
     docker:
-      - image: alpine:latest
+      - image: openjdk11:alpine
     steps:
       # - attach_workspace:
       #     at: ~/   
