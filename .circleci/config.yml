@@ -51,18 +51,18 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
+      - run: |
+          yum install -y tar gzip
       - attach_workspace:
           at: ~/   
       - run:
           name: Get Public IP address of server
           command: |
-            yum install -y tar gzip
             tail -n 1 ~/inventory > url
       - run: apk add --update curl
       - run: 
           name: smoke test
-          command: |
-            # URL = http://$(cat url)  
+          command: |  
             # test if website exists
             if curl -s --head http://$(cat url)
             then 
