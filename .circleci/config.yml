@@ -10,12 +10,14 @@ jobs:
       - checkout
       # - aws-cli/setup
       - run: |
+          yum install -y tar gzip
           aws cloudformation create-stack \
             --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
             --template-body file://ec2.yml \
             --parameters file://param.json \
             --region $AWS_DEFAULT_REGION
           echo "[all]" > ~/inventory
+          sleep 300
           aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Project,Values=Udacity" --output text >> ~/inventory
       - persist_to_workspace:
           root: ~/  
