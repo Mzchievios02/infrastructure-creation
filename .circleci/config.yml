@@ -51,18 +51,19 @@ jobs:
   # smoke test
   smoke-test:
     docker:
-      - image: amazon/aws-cli
+      - image: alpine:latest
     steps:
-      - run: |
-          yum install -y tar gzip
-          yum install -y curl
       - attach_workspace:
           at: ~/   
       - run:
           name: Get Public IP address of server
           command: |
             tail -n 1 ~/inventory > url
-      # - run: apk add --update curl  # use this command for alpine image
+     - run:
+        name: Install curl and aws cli 
+        command: |  
+          apk add --update curl
+          apk add --no-cache aws-cli      # Install aws cli on alpine so destroy environment command can be run  
       - run: 
           name: smoke test
           command: |  
