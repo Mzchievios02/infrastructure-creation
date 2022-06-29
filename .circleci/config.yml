@@ -22,7 +22,7 @@ jobs:
             - inventory
   configure-infrastructure:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: python:3.7-alpine3.16
     steps:
       - checkout
       - attach_workspace:
@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: |
-            ansible-playbook -i ~/inventory main.yml --private-key /root/.ssh/id_rsa_* -vvv
+            ansible-playbook -i ~/inventory main.yml -vvv
 workflows:
   my_workflow:
     jobs:
