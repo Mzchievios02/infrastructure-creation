@@ -1,14 +1,10 @@
 version: 2.1
-# orbs:
-#   aws-cli: circleci/aws-cli@3.1
 jobs:
   create-infrastructure:
-    # executor: aws-cli/default
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
-      # - aws-cli/setup
       - run: |
           yum install -y tar gzip
           aws cloudformation create-stack \
@@ -24,15 +20,6 @@ jobs:
           root: ~/  
           paths: 
             - inventory
-  # print-public-ip:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - attach_workspace:
-  #         at: ~/
-  #     - run: |
-  #         yum install -y tar gzip
-  #         cat ~/inventory
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -54,10 +41,7 @@ jobs:
 workflows:
   my_workflow:
     jobs:
-      - create-infrastructure
-      # - print-public-ip:
-      #     requires: 
-      #       - create-infrastructure  
+      - create-infrastructure  
       - configure-infrastructure:
           requires: 
             - create-infrastructure
