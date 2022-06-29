@@ -51,7 +51,7 @@ jobs:
   # smoke test
   smoke-test:
     docker:
-      - image: openjdk11:alpine
+      - image: adoptopenjdk/openjdk11:alpine
     steps:
       # - attach_workspace:
       #     at: ~/   
