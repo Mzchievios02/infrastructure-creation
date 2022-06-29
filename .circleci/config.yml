@@ -53,12 +53,12 @@ jobs:
     docker:
       - image: alpine:latest
     steps:
-      - attach_workspace:
-          at: ~/   
-      - run:
-          name: Get Public IP address of server
-          command: |
-            tail -n 1 ~/inventory > url
+      # - attach_workspace:
+      #     at: ~/   
+      # - run:
+      #     name: Get Public IP address of server
+      #     command: |
+      #       tail -n 1 ~/inventory > url
       - run:
           name: Install curl and aws cli 
           command: |  
