@@ -24,26 +24,29 @@ jobs:
           root: ~/  
           paths: 
             - inventory
-  print-public-ip:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - command: yum install -y tar gzip
-      - attach_workspace:
-          at: ~/
-      - run: |
-          cat ~/inventory
+  # print-public-ip:
+  #   docker:
+  #     - image: amazon/aws-cli
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/
+  #     - run: |
+  #         yum install -y tar gzip
+  #         cat ~/inventory
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/
       - add_ssh_keys:
             fingerprints: ["ca:0e:3c:d2:b0:fe:9f:c9:28:50:75:17:20:b3:3f:a3"]
       - run: 
           name: Install Ansible
           command: |
             apk add --update ansible
+            cat ~/inventory
       - run:
           name: Run Playbook and Configure server
           command: |
@@ -52,9 +55,9 @@ workflows:
   my_workflow:
     jobs:
       - create-infrastructure
-      - print-public-ip:
-          requires: 
-            - create-infrastructure  
+      # - print-public-ip:
+      #     requires: 
+      #       - create-infrastructure  
       - configure-infrastructure:
           requires: 
-            - print-public-ip
+            - create-infrastructure
