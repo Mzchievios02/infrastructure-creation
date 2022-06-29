@@ -19,6 +19,7 @@ jobs:
           echo "[all]" > ~/inventory
           sleep 100
           aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Project,Values=Udacity" --output text >> ~/inventory
+          cat ~/inventory
       - persist_to_workspace:
           root: ~/  
           paths: 
@@ -27,10 +28,10 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
+      - command: yum install -y tar gzip
       - attach_workspace:
           at: ~/
       - run: |
-          yum install -y tar gzip
           cat ~/inventory
   configure-infrastructure:
     docker:
