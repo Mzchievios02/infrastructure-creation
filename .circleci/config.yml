@@ -38,6 +38,29 @@ jobs:
           name: Run Playbook and Configure server
           command: |
             ansible-playbook -i ~/inventory main.yml -vvv
+  # smoke test
+  smoke-test:
+    docker:
+      - image: alpine:latest
+    steps:
+      - attach_workspace:
+        at: ~/   
+      - run:
+          name: Get Public IP address of server
+          command: |
+            tail -n 1 ~/inventory > url
+      - run: apk add --update curl
+      - run: 
+          name: smoke test
+          command: |
+            URL = http://$(cat url)  
+            # test if website exists
+            if curl -s --head ${URL}
+            then 
+              return 0
+            else 
+              return 1
+            fi    
 workflows:
   my_workflow:
     jobs:
@@ -45,3 +68,6 @@ workflows:
       - configure-infrastructure:
           requires: 
             - create-infrastructure
+      - smoke-test:
+          requires:
+            - configure-infrastructure
