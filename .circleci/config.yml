@@ -53,9 +53,9 @@ jobs:
       - run: 
           name: smoke test
           command: |
-            URL = http://$(cat url)  
+            # URL = http://$(cat url)  
             # test if website exists
-            if curl -s --head ${URL}
+            if curl -s --head http://$(cat url)
             then 
               return 0
             else 
