@@ -3,18 +3,31 @@ version: 2.1
 #   aws-cli: circleci/aws-cli@3.1
 jobs:
   create-infrastructure:
-    executor: aws-cli/default
+    # executor: aws-cli/default
+    docker:
+      - image: amazon/aws-cli
     steps:
       - checkout
       - aws-cli/setup
-      - run:
-          name: Create CloudFormation Stack
-          command: |
-            aws cloudformation create-stack \
-              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-              --template-body file://ec2.yml \
-              --parameters file://param.json \
-              --region $AWS_DEFAULT_REGION
+      - run: |
+          aws cloudformation create-stack \
+            --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+            --template-body file://ec2.yml \
+            --parameters file://param.json \
+            --region $AWS_DEFAULT_REGION
+          echo "[all]" > ~/inventory
+          aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Project,Values=Udacity" --output text >> ~/inventory
+      - persist_to_workspace:
+          root: ~/  
+          paths: 
+            - inventory
+  print-public-ip:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: cat ~/inventory
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -33,5 +46,7 @@ jobs:
 workflows:
   aws-cli:
     jobs:
-      # - create-infrastructure
+      - create-infrastructure
+      - print-public-ip:
+          requires: [create-infrastructure]
       - configure-infrastructure
