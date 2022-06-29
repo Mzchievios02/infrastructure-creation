@@ -44,7 +44,7 @@ jobs:
           command: |
             ansible-playbook -i inventory main.yml
 workflows:
-  aws-cli:
+  my_workflow:
     jobs:
       - create-infrastructure
       - print-public-ip:
