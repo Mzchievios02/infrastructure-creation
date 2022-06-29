@@ -1,6 +1,8 @@
 version: 2.1
 commands:
   destroy-environmet:
+    docker: 
+      image: amazon/aws-cli
     steps:
       - run: 
           name: Destroy Environment
@@ -49,10 +51,10 @@ jobs:
   # smoke test
   smoke-test:
     docker:
-      - image: amazon/aws-cli
+      - image: alpine:latest
     steps:
-      - run: |
-          yum install -y tar gzip
+      # - run: |
+      #     yum install -y tar gzip
       - attach_workspace:
           at: ~/   
       - run:
