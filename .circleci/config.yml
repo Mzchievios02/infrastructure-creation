@@ -52,6 +52,8 @@ workflows:
     jobs:
       - create-infrastructure
       - print-public-ip:
-          requires: [create-infrastructure]
+          requires: 
+            - create-infrastructure  
       - configure-infrastructure
-          requires: [print-public-ip]
+          requires: 
+            - print-public-ip
