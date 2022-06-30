@@ -24,11 +24,12 @@ jobs:
           echo "[all]" > ~/inventory
           sleep 100
           aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Project,Values=Udacity" --output text >> ~/inventory
-          cat ~/inventory
+          cat ~/inventory # cat a file that does not exist to simualte a rollback
       - persist_to_workspace:
           root: ~/  
           paths: 
             - inventory
+      - destroy-environmet
   # Configure Infrastrcuture with Ansible
   configure-infrastructure:
     docker:
@@ -42,10 +43,10 @@ jobs:
       - run: 
           name: Install Ansible and aws cli
           command: |
-            apk add --no-cache aws-cli
+            apk add --no-cache aws-cli # this will install aws-cli v1
             aws --version
             apk add --update ansible
-            cat ~/inventorys  # cat a file that does not exist to simualte a rollback
+            cat ~/inventory  # cat a file that does not exist to simualte a rollback
       - run:
           name: Run Playbook and Configure server
           command: |
