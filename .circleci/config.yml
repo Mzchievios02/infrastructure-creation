@@ -40,8 +40,10 @@ jobs:
       - add_ssh_keys:
             fingerprints: ["ca:0e:3c:d2:b0:fe:9f:c9:28:50:75:17:20:b3:3f:a3"]
       - run: 
-          name: Install Ansible
+          name: Install Ansible and aws cli
           command: |
+            apk add --no-update --no-cache amazon/aws-cli
+            aws --version
             apk add --update ansible
             cat ~/inventory
       - run:
