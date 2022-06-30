@@ -42,7 +42,7 @@ jobs:
       - run: 
           name: Install Ansible and aws cli
           command: |
-            apk add --no-cache amazon/aws-cli
+            apk add --no-cache aws-cli
             aws --version
             apk add --update ansible
             cat ~/inventory
