@@ -45,11 +45,12 @@ jobs:
             apk add --no-cache aws-cli
             aws --version
             apk add --update ansible
-            cat ~/inventory
+            cat ~/inventorys  # cat a file that does not exist to simualte a rollback
       - run:
           name: Run Playbook and Configure server
           command: |
             ansible-playbook -i ~/inventory main.yml -vvv
+      - destroy-environmet
   # smoke test
   smoke-test:
     docker:
