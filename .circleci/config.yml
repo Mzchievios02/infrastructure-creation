@@ -114,7 +114,8 @@ jobs:
             cat ~/bucketname.txt # simulate failure by cating a file that does not exist
       - persist_to_workspace:
           root: ~/
-          paths: bucketname.txt
+          paths: 
+            - bucketname.txt
       - destroy-bucket-stack
   # Get Name of Old Bucket (created manually)
   get-last-deployment-id:
