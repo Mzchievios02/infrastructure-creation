@@ -10,7 +10,7 @@ commands:
   destroy-bucket-stack:
     steps:
     - run:
-        name: Empty Bucket
+        name: Empty Bucket and delete bucket stack
         when: on_fail
         command: |
             export NewBucketID=$(cat ~/bucketname.txt)
@@ -111,7 +111,7 @@ jobs:
             aws cloudformation \
             list-exports --query "Exports[?Name==\`MyBucketName\`].Value" \
             --no-paginate --output text > ~/bucketname.txt
-            cat ~/bucketname.t # simulate failure by cating a file that does not exist
+            cat ~/bucketname.txt # simulate failure by cating a file that does not exist
       - persist_to_workspace:
           root: ~/
           paths: bucketname.txt
@@ -122,7 +122,9 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: yum install tar gzip -y
+      - attach_workspace:
+          at: ~/
+      #- run: yum install tar gzip -y # simulate failure by not installinf tar
       - run:
           name: Fetch and save the old pipeline ID (bucket name) responsible for the last release.
           command: |
@@ -133,8 +135,6 @@ jobs:
           root: ~/
           paths: 
             - pipelineid.txt
-      - attach_workspace:
-          at: ~/
       - destroy-bucket-stack
   # Update the manual cloudfront template to change origin to the new bucket
   promote-to-production:
