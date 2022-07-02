@@ -111,7 +111,7 @@ jobs:
             aws cloudformation \
             list-exports --query "Exports[?Name==\`MyBucketName\`].Value" \
             --no-paginate --output text > ~/bucketname.txt
-            cat ~/bucketname.tx # simulate failure by cating a file that does not exist
+            cat ~/bucketname.t # simulate failure by cating a file that does not exist
       - persist_to_workspace:
           root: ~/
           paths: bucketname.txt
