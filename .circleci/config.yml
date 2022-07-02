@@ -14,7 +14,7 @@ commands:
         when: on_fail
         command: |
             export NewBucketID=$(cat ~/bucketname.txt)
-            echo NewBucketID
+            echo $NewBucketID
             aws s3 rm "s3://${NewBucketID}" --recursive  # Empty the  bucket first
             aws cloudformation delete-stack --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7}            
 
@@ -183,6 +183,7 @@ workflows:
       - promote-to-production:
           requires:
             - create-and-deploy-front-end
+            - get-last-deployment-id
       - get-last-deployment-id:
           requires:
             - create-and-deploy-front-end # required to destroy bucket on failure
