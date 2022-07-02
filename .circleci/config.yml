@@ -112,9 +112,9 @@ jobs:
             list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
             --no-paginate --output text > ~/pipelineid.txt
       - persist_to_workspace:
-        root: ~/
-        pathx: 
-          - ~/pipelineid.txt
+          root: ~/
+          paths: 
+            - ~/pipelineid.txt
   # Update the manual cloudfront template to change origin to the new bucket
   promote-to-production:
     docker:
