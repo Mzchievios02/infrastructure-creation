@@ -91,12 +91,7 @@ jobs:
       - run: 
           name: Execute bucket.yml - Create Cloudformation Stack
           command: |
-            aws cloudformation deploy \ 
-            --template-file bucket.yml \
-            --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
-            --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --tags project=udapeople \
-            --region $AWS_DEFAULT_REGION
+            aws cloudformation deploy --template-file bucket.yml --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}" --tags project=udapeople
       - run: aws s3 sync index.html s3://mybucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
   # Get Name of Old Bucket (created manually)
   get-last-deployment-id:
@@ -114,7 +109,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths: 
-            - ~/pipelineid.txt
+            - pipelineid.txt
   # Update the manual cloudfront template to change origin to the new bucket
   promote-to-production:
     docker:
