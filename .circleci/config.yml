@@ -14,7 +14,7 @@ commands:
         when: on_fail
         command: |
             export NewBucketID=$(cat ~/bucketname.txt)
-            aws s3 rm "s3://${bucketname}" --recursive  # Empty the  bucket first
+            aws s3 rm "s3://${NewBucketID}" --recursive  # Empty the  bucket first
             aws cloudformation delete-stack --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7}            
 
 jobs:
