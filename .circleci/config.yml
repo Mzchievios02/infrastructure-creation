@@ -181,7 +181,7 @@ workflows:
       - promote-to-production:
           requires:
             - create-and-deploy-front-end
-      - get-last-deployment-id
+      - get-last-deployment-id:
           requires:
             - create-and-deploy-front-end # required to destroy bucket on failure
       - clean-up-old-front-end:
