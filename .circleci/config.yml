@@ -14,6 +14,7 @@ commands:
         when: on_fail
         command: |
             export NewBucketID=$(cat ~/bucketname.txt)
+            echo NewBucketID
             aws s3 rm "s3://${NewBucketID}" --recursive  # Empty the  bucket first
             aws cloudformation delete-stack --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7}            
 
@@ -125,6 +126,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/
+      - run: echo NewBucketID
       #- run: yum install tar gzip -y # simulate failure by not installinf tar
       - run:
           name: Fetch and save the old pipeline ID (bucket name) responsible for the last release.
