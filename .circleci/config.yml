@@ -124,10 +124,8 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/
-      - run: echo NewBucketID
-      #- run: yum install tar gzip -y # simulate failure by not installinf tar
+      - run: echo $NewBucketID
+      - run: yum install tar gzip -y 
       - run:
           name: Fetch and save the old pipeline ID (bucket name) responsible for the last release.
           command: |
@@ -138,6 +136,8 @@ jobs:
           root: ~/
           paths: 
             - pipelineid.txt
+      - attach_workspace:
+          at: ~/
       - destroy-bucket-stack
   # Update the manual cloudfront template to change origin to the new bucket
   promote-to-production:
@@ -187,8 +187,8 @@ workflows:
       - get-last-deployment-id:
           requires:
             - create-and-deploy-front-end # required to destroy bucket on failure
-      # - clean-up-old-front-end:
-      #     requires:
-      #       - get-last-deployment-id
-      #       - promote-to-production
+      - clean-up-old-front-end:
+          requires:
+            - get-last-deployment-id
+            - promote-to-production
          
