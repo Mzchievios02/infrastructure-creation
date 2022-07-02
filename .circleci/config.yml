@@ -82,14 +82,85 @@ jobs:
               exit 1
             fi
       - destroy-environmet
-  
+  # Create S3 bucket and copy prod files to bucket
+  create-and-deploy-front-end:
+    docker: 
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: 
+          name: Execute bucket.yml - Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \ 
+            --template-file bucket.yml \
+            --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
+            --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople \
+            --region $AWS_DEFAULT_REGION
+      - run: aws s3 sync index.html s3://mybucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
+  # Get Name of Old Bucket (created manually)
+  get-last-deployment-id:
+    docker: 
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: yum install tar gzip -y
+      - run:
+          name: Fetch and save the old pipeline ID (bucket name) responsible for the last release.
+          command: |
+            aws cloudformation \
+            list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
+            --no-paginate --output text > ~/pipelineid.txt
+      -persist_to_workspace:
+        root: ~/
+        pathx: 
+          - ~/pipelineid.txt
+  # Update the manual cloudfront template to change origin to the new bucket
+  promote-to-production:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Execute cloudfront.yml
+          command: |
+              aws cloudformation deploy \ 
+              --template-file cloudfront.yml \
+              --stack-name production-distro \
+              --parameter-overrides PipelineID="mybucket-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=udapeople \
+              --region $AWS_DEFAULT_REGION
+  # Delete the old bucket (created manually)
+  clean-up-old-front-end:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: yum install -y tar gzip
+      - attach_workspace:
+          at: ~/
+      - run: 
+          name: Destroy the previous S3 bucket 
+          command: |
+            export OldBucketID=$(cat ~/pipelineid.txt)
+            aws s3 rm "s3://${OldBucketID}" --recursive        
 workflows:
-  my_workflow:
+  my_cloudfront_workflow:
     jobs:
-      - create-infrastructure  
-      - configure-infrastructure:
-          requires: 
-            - create-infrastructure
-      - smoke-test:
+      # - create-infrastructure  
+      # - configure-infrastructure:
+      #     requires: 
+      #       - create-infrastructure
+      # - smoke-test:
+      #     requires:
+      #       - configure-infrastructure
+      - create-and-deploy-front-end
+      - promote-to-production:
           requires:
-            - configure-infrastructure
+            - create-and-deploy-front-end
+      - get-last-deployment-id
+      - clean-up-old-front-end:
+          requires:
+            - get-last-deployment-id
+            - promote-to-production
+         
